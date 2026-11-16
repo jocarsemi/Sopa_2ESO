@@ -1,0 +1,2199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="bauhaus">
+  <title>Sopa de letras — Tema 2: El ordenador (hardware y software)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js" defer></script>
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces (Bauhaus) */
+      --background: #f5f0e8;
+      --surface-container-low: #f2ede5;
+      --surface-container: #eee9e0;
+      --surface-container-high: #e8e3da;
+
+      /* Ink */
+      --on-surface: #1a1a1a;
+      --on-surface-variant: #4a4a4a;
+
+      /* Lines */
+      --outline: #1a1a1a;
+      --outline-variant: #d0cbc3;
+
+      /* Accents */
+      --primary: #1a1a1a;
+      --on-primary: #ffffff;
+      --primary-container: #ffcc00;
+      --on-primary-container: #1a1a1a;
+      --secondary: #e63b2e;
+      --tertiary: #0055ff;
+      --on-tertiary: #ffffff;
+      --error: #cc0000;
+      --on-error: #ffffff;
+
+      /* Data series */
+      --data-1: #e63b2e;
+      --data-2: #0055ff;
+      --data-3: #1a1a1a;
+      --data-4: #9a7300;
+      --data-context: #b5afa5;
+
+      /* Fonts */
+      --font-headline: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-label: 'Space Grotesk', sans-serif;
+
+      /* Shape */
+      --rounded: 0.125rem;
+      --rounded-lg: 0.25rem;
+      --rounded-full: 0.75rem;
+
+      /* Style effects */
+      --border-thick: 3px solid var(--outline);
+      --border-medium: 2px solid var(--outline);
+      --border-grid: 1px solid var(--outline-variant);
+      --offset-shadow: 5px 5px 0 var(--outline);
+      --offset-shadow-sm: 3px 3px 0 var(--outline);
+      --rule-heavy: 6px solid var(--outline);
+      --shift-hover: translate(-2px, -2px);
+      --shift-press: translate(3px, 3px);
+      --offset-shadow-lg: 7px 7px 0 var(--outline);
+
+      /* Shared semantic & focus tokens */
+      --positive: #136f3a;
+      --on-positive: #ffffff;
+      --warning: #9a7300;
+      --focus: #0055ff;
+
+      /* Type scale (Focused Tool + Bauhaus display) */
+      --display-size: clamp(2.1rem, 1.4rem + 2.6vw, 3.35rem);
+      --headline-size: clamp(1.25rem, 1.08rem + 0.6vw, 1.55rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Spacing scale (4pt base) */
+      --space-2xs: 0.125rem;
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+    }
+
+    /* Base reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      position: static !important;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .page-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1200px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .page-grid * {
+      min-width: 0;
+    }
+
+    /* Header & Oversized Title */
+    .hero-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: end;
+      border-bottom: var(--rule-heavy);
+      padding-bottom: var(--space-lg);
+    }
+
+    .kicker-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      background-color: var(--primary);
+      color: var(--on-primary);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--rounded);
+      margin-bottom: var(--space-sm);
+    }
+
+    .kicker-tag--blue {
+      background-color: var(--tertiary);
+      color: var(--on-tertiary);
+    }
+
+    .kicker-tag--yellow {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: var(--border-medium);
+    }
+
+    .title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--display-size);
+      line-height: 0.98;
+      letter-spacing: -0.03em;
+      color: var(--on-surface);
+      margin: 0;
+    }
+
+    .title mark {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      padding-inline: var(--space-xs);
+      box-decoration-break: clone;
+      -webkit-box-decoration-break: clone;
+    }
+
+    .lede {
+      margin: var(--space-md) 0 0;
+      color: var(--on-surface-variant);
+      max-width: 58ch;
+      font-size: var(--body-size);
+    }
+
+    /* Progress & HUD Strip */
+    .hud-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-md);
+    }
+
+    .stat-block {
+      border: var(--border-thick);
+      border-radius: var(--rounded);
+      box-shadow: var(--offset-shadow-sm);
+      background-color: var(--surface-container-low);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-xs);
+    }
+
+    .stat-block--accent {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .stat-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface-variant);
+    }
+
+    .stat-block--accent .stat-label {
+      color: var(--on-primary-container);
+    }
+
+    .stat-value {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
+      color: var(--on-surface);
+    }
+
+    .stat-caption {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .stat-block--accent .stat-caption {
+      color: var(--on-primary-container);
+    }
+
+    /* Progress bar inside hero side */
+    .progress-panel {
+      border: var(--border-thick);
+      border-radius: var(--rounded);
+      box-shadow: var(--offset-shadow-sm);
+      background-color: var(--surface-container-low);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: var(--space-sm);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: var(--space-md);
+      background-color: var(--surface-container-high);
+      border: var(--border-medium);
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--secondary);
+      transition: width var(--dur-short) var(--ease-out);
+    }
+
+    /* Main Asymmetric Two-Column Workspace */
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--space-lg);
+      align-items: start;
+    }
+
+    .block {
+      border: var(--border-thick);
+      border-radius: var(--rounded);
+      box-shadow: var(--offset-shadow);
+      background-color: var(--surface-container-low);
+      padding: var(--space-lg);
+    }
+
+    .section-open--blue {
+      border-top: var(--space-sm) solid var(--tertiary);
+    }
+
+    .section-open--red {
+      border-top: var(--space-sm) solid var(--secondary);
+    }
+
+    .section-open--black {
+      border-top: var(--space-sm) solid var(--primary);
+    }
+
+    .panel-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .panel-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--headline-size);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin: var(--space-xs) 0 0;
+    }
+
+    /* Controls Toolbar */
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-md);
+      padding-bottom: var(--space-md);
+      border-bottom: var(--border-medium);
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+    }
+
+    .field-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--on-surface);
+    }
+
+    .bauhaus-select {
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-xl) var(--space-xs) var(--space-sm);
+      background-color: var(--background);
+      color: var(--on-surface);
+      border: 0;
+      border-bottom: var(--border-thick);
+      font-size: var(--body-size);
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: 0;
+    }
+
+    .bauhaus-select:focus-visible {
+      border-bottom-color: var(--tertiary);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-md);
+      border: var(--border-thick);
+      border-radius: var(--rounded);
+      box-shadow: var(--offset-shadow-sm);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out),
+                  background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .btn-secondary {
+      background-color: var(--background);
+      color: var(--on-surface);
+    }
+
+    .btn-blue {
+      background-color: var(--tertiary);
+      color: var(--on-tertiary);
+    }
+
+    .btn-danger-armed {
+      background-color: var(--error);
+      color: var(--on-error);
+    }
+
+    .btn:hover:not(:disabled) {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      transform: var(--shift-hover);
+      box-shadow: var(--offset-shadow);
+    }
+
+    .btn:active:not(:disabled) {
+      transform: var(--shift-press);
+      box-shadow: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.48;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .btn svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    /* Word Search Grid */
+    .grid-stage {
+      position: relative;
+      background-color: var(--background);
+      border: var(--border-thick);
+      padding: var(--space-xs);
+    }
+
+    .word-grid {
+      display: grid;
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      border-top: var(--border-grid);
+      border-left: var(--border-grid);
+    }
+
+    .grid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      border: 0;
+      border-right: var(--border-grid);
+      border-bottom: var(--border-grid);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(0.75rem, 1.55vw, 1.0625rem);
+      line-height: 1;
+      text-transform: uppercase;
+      cursor: crosshair;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out);
+      position: relative;
+    }
+
+    .grid-cell:hover:not(.is-selecting):not(.is-anchor) {
+      background-color: var(--surface-container-high);
+    }
+
+    .grid-cell.is-found {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .grid-cell.is-hint {
+      background-color: var(--surface-container-high);
+      box-shadow: inset 0 0 0 3px var(--tertiary);
+      color: var(--on-surface);
+    }
+
+    .grid-cell.is-word-focus {
+      box-shadow: inset 0 0 0 3px var(--primary);
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .grid-cell.is-anchor {
+      background-color: var(--tertiary);
+      color: var(--on-tertiary);
+      box-shadow: inset 0 0 0 2px var(--primary);
+    }
+
+    .grid-cell.is-selecting {
+      background-color: var(--tertiary);
+      color: var(--on-tertiary);
+    }
+
+    .grid-cell.is-error-flash {
+      background-color: var(--error);
+      color: var(--on-error);
+    }
+
+    /* Paused veil */
+    .pause-veil {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background-color: var(--surface-container);
+      z-index: 5;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      text-align: center;
+    }
+
+    .pause-veil.is-visible {
+      display: flex;
+    }
+
+    .pause-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--headline-size);
+      margin: 0;
+    }
+
+    /* Live Readout Strip below Grid */
+    .selection-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--surface-container);
+      border: var(--border-medium);
+      min-height: 48px;
+    }
+
+    .selection-preview {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--subhead-size);
+      letter-spacing: 0.14em;
+      color: var(--on-surface);
+      min-height: 1.4em;
+    }
+
+    .feedback-pill {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: var(--space-xs) var(--space-sm);
+      border: var(--border-medium);
+      background-color: var(--background);
+      color: var(--on-surface);
+    }
+
+    .feedback-pill--ok {
+      background-color: var(--positive);
+      color: var(--on-positive);
+    }
+
+    .feedback-pill--err {
+      background-color: var(--error);
+      color: var(--on-error);
+    }
+
+    .feedback-pill--info {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .how-to-note {
+      margin: var(--space-sm) 0 0;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    /* Victory Banner */
+    .victory-banner {
+      display: none;
+      margin-top: var(--space-md);
+      padding: var(--space-md);
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: var(--border-thick);
+      box-shadow: var(--offset-shadow-sm);
+    }
+
+    .victory-banner.is-visible {
+      display: block;
+    }
+
+    .victory-title {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: var(--headline-size);
+      margin: 0 0 var(--space-xs);
+    }
+
+    .victory-metrics {
+      margin: 0 0 var(--space-md);
+      font-weight: 600;
+    }
+
+    /* Right Column: Study Concept Card + Word Bank */
+    .side-stack {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-lg);
+    }
+
+    .concept-card {
+      container-type: inline-size;
+    }
+
+    .concept-word {
+      font-family: var(--font-headline);
+      font-weight: 700;
+      font-size: clamp(1.35rem, 1.15rem + 0.6vw, 1.75rem);
+      letter-spacing: -0.02em;
+      margin: var(--space-xs) 0 var(--space-xs);
+    }
+
+    .concept-meta {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: var(--space-2xs) var(--space-sm);
+      border: var(--border-medium);
+      background-color: var(--tertiary);
+      color: var(--on-tertiary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .concept-def {
+      margin: 0;
+      color: var(--on-surface);
+    }
+
+    /* Word Bank List */
+    .word-bank-card {
+      container-type: inline-size;
+    }
+
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+
+    .tab-btn {
+      min-height: 44px;
+      padding: var(--space-xs) var(--space-sm);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+
+    .tab-btn.is-active {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border: var(--border-thick);
+    }
+
+    .tab-btn:hover:not(.is-active) {
+      background-color: var(--surface-container-high);
+    }
+
+    .word-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-sm);
+    }
+
+    @container (max-width: 380px) {
+      .word-list {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .word-item-btn {
+      width: 100%;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      border: var(--border-medium);
+      border-radius: var(--rounded);
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-align: left;
+      cursor: pointer;
+      transition: transform var(--dur-micro) var(--ease-out),
+                  background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .word-item-btn:hover {
+      background-color: var(--surface-container-high);
+      transform: var(--shift-hover);
+    }
+
+    .word-item-btn.is-selected-concept {
+      box-shadow: var(--offset-shadow-sm);
+      border-color: var(--tertiary);
+    }
+
+    .word-item-btn.is-found {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+    }
+
+    .word-item-name {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .word-item-btn.is-found .word-item-name {
+      text-decoration: line-through;
+      text-decoration-thickness: 2px;
+    }
+
+    .word-status-badge {
+      font-size: var(--label-size);
+      padding: var(--space-2xs) var(--space-xs);
+      border: var(--border-medium);
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      flex-shrink: 0;
+    }
+
+    .word-item-btn.is-found .word-status-badge {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .word-empty-msg {
+      grid-column: 1 / -1;
+      padding: var(--space-md);
+      background-color: var(--surface-container);
+      border: var(--border-medium);
+      margin: 0;
+      color: var(--on-surface-variant);
+    }
+
+    /* Footer */
+    .source-footer {
+      border-top: var(--rule-heavy);
+      padding-top: var(--space-md);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: var(--space-md);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    .source-footer strong {
+      color: var(--on-surface);
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 960px) {
+      .hero-header {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .workspace {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .hud-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-sm);
+        gap: var(--space-md);
+      }
+
+      .block {
+        padding: var(--space-md);
+        box-shadow: var(--offset-shadow-sm);
+      }
+
+      .grid-cell {
+        font-size: clamp(0.6875rem, 3.1vw, 0.9rem);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-grid">
+    <header class="hero-header">
+      <div>
+        <span class="kicker-tag">Tecnología 2.º ESO · Tema 2</span>
+        <h1 class="title">El ordenador: <mark>sopa de letras</mark></h1>
+        <p class="lede">
+          Localiza las 20 palabras clave sobre información digital, hardware interno, periféricos y conectores. Haz clic o arrastra sobre la cuadrícula para marcar cada término y consulta su definición del temario.
+        </p>
+      </div>
+      <div class="progress-panel" aria-live="polite">
+        <div class="progress-header">
+          <span class="stat-label">Progreso del tema</span>
+          <span id="progress-pct" class="stat-label">0%</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0" id="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <span class="stat-caption" id="best-record-text">Mejor puntuación registrada: —</span>
+      </div>
+    </header>
+
+    <section class="hud-strip" aria-label="Marcadores de partida">
+      <div class="stat-block stat-block--accent">
+        <span class="stat-label">Palabras</span>
+        <span class="stat-value" id="hud-found">0 / 20</span>
+        <span class="stat-caption" id="hud-remaining">20 pendientes</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Temporizador</span>
+        <span class="stat-value" id="hud-timer">00:00</span>
+        <span class="stat-caption" id="hud-timer-status">Listo para empezar</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Puntuación</span>
+        <span class="stat-value" id="hud-score">0</span>
+        <span class="stat-caption" id="hud-hints">0 pistas usadas</span>
+      </div>
+      <div class="stat-block">
+        <span class="stat-label">Racha activa</span>
+        <span class="stat-value" id="hud-streak">x1</span>
+        <span class="stat-caption">Acierto rápido &lt; 20 s</span>
+      </div>
+    </section>
+
+    <main class="workspace">
+      <!-- Left Primary Canvas: Word Search Grid -->
+      <section class="block section-open--blue" aria-labelledby="grid-heading">
+        <div class="panel-head">
+          <div>
+            <span class="kicker-tag kicker-tag--blue">Cuadrícula interactiva · 16 × 16</span>
+            <h2 class="panel-title" id="grid-heading">Tablero de búsqueda</h2>
+          </div>
+        </div>
+
+        <div class="controls-bar">
+          <div class="field-group">
+            <label class="field-label" for="difficulty-select">Dirección de palabras</label>
+            <select id="difficulty-select" class="bauhaus-select">
+              <option value="normal">Estándar (→ ↓ ↘ ↗)</option>
+              <option value="avanzado">Desafío (todas direcciones + inversas)</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-secondary" id="btn-pause">
+            <i data-lucide="pause" aria-hidden="true"></i>
+            <span>Pausar</span>
+          </button>
+          <button type="button" class="btn btn-blue" id="btn-hint">
+            <i data-lucide="lightbulb" aria-hidden="true"></i>
+            <span>Pista (-30)</span>
+          </button>
+          <button type="button" class="btn btn-primary" id="btn-new-game">
+            <i data-lucide="rotate-cw" aria-hidden="true"></i>
+            <span>Nueva partida</span>
+          </button>
+        </div>
+
+        <div class="grid-stage">
+          <div class="word-grid" id="word-grid" role="grid" aria-label="Cuadrícula de sopa de letras de 16 por 16"></div>
+          <div class="pause-veil" id="pause-veil" aria-hidden="true">
+            <p class="pause-title">Partida en pausa</p>
+            <p class="lede">El temporizador está detenido y las letras se ocultan hasta que reanudes.</p>
+            <button type="button" class="btn btn-primary" id="btn-resume">
+              <i data-lucide="play" aria-hidden="true"></i>
+              <span>Reanudar partida</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="selection-bar" aria-live="polite">
+          <div>
+            <span class="stat-label">Selección: </span>
+            <span class="selection-preview" id="selection-preview">—</span>
+          </div>
+          <span class="feedback-pill" id="feedback-pill">Arrastra o toca inicio y fin</span>
+        </div>
+        <p class="how-to-note">
+          Consejo: puedes arrastrar de la primera letra a la última, hacer clic en inicio y fin, o usar las flechas del teclado y pulsar Intro.
+        </p>
+
+        <div class="victory-banner" id="victory-banner" role="status" aria-live="polite">
+          <h3 class="victory-title">¡Tema 2 completado!</h3>
+          <p class="victory-metrics" id="victory-metrics"></p>
+          <button type="button" class="btn btn-secondary" id="btn-play-again">
+            <i data-lucide="rotate-cw" aria-hidden="true"></i>
+            <span>Jugar otra partida</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Right Column: Study Concept Card + 20 Word Bank -->
+      <aside class="side-stack" aria-label="Registro de palabras y definiciones">
+        <section class="block section-open--red concept-card" aria-labelledby="concept-heading">
+          <span class="kicker-tag">Ficha de repaso · Tema 2</span>
+          <h2 class="panel-title" id="concept-heading">Concepto seleccionado</h2>
+          <p class="concept-word" id="concept-word">HARDWARE</p>
+          <span class="concept-meta" id="concept-category">2. Componentes del ordenador</span>
+          <p class="concept-def" id="concept-def">
+            Conjunto de dispositivos físicos que componen el ordenador (placa base, CPU, memoria RAM, disco duro, fuente y carcasa).
+          </p>
+        </section>
+
+        <section class="block section-open--black word-bank-card" aria-labelledby="bank-heading">
+          <div class="panel-head">
+            <div>
+              <span class="kicker-tag kicker-tag--yellow">Lista de búsqueda</span>
+              <h2 class="panel-title" id="bank-heading">Las 20 palabras clave</h2>
+            </div>
+          </div>
+
+          <div class="filter-tabs" role="tablist" aria-label="Filtrar palabras">
+            <button type="button" class="tab-btn is-active" data-filter="all" role="tab" aria-selected="true">Todas (20)</button>
+            <button type="button" class="tab-btn" data-filter="pending" role="tab" aria-selected="false">Pendientes</button>
+            <button type="button" class="tab-btn" data-filter="found" role="tab" aria-selected="false">Encontradas</button>
+          </div>
+
+          <ul class="word-list" id="word-list"></ul>
+        </section>
+      </aside>
+    </main>
+
+    <footer class="source-footer">
+      <span>Fuente de contenidos: <strong>Tema 2. El ordenador: hardware y software</strong> (Tecnología 2.º ESO).</span>
+      <span>20 términos clave · Progreso guardado automáticamente</span>
+    </footer>
+  </div>
+
+  <api-shim></api-shim>
+  <script>
+    (function () {
+      'use strict';
+
+      const GRID_SIZE = 16;
+
+      const WORDS_DATA = [
+        {
+          word: `MICROPROCESADOR`,
+          category: `2. Hardware interno`,
+          def: `También llamado CPU, es el cerebro del ordenador: procesa todos los datos y controla el funcionamiento de los dispositivos. Su velocidad se mide en hercios (Hz).`
+        },
+        {
+          word: `ALIMENTACION`,
+          category: `2. Hardware interno`,
+          def: `La fuente de alimentación se encarga de suministrar energía eléctrica al resto de componentes del ordenador con el voltaje correcto.`
+        },
+        {
+          word: `PERIFERICO`,
+          category: `3. Periféricos y puertos`,
+          def: `Dispositivo externo que permite introducir información al ordenador (entrada, como el teclado) o sacarla al exterior (salida, como el monitor).`
+        },
+        {
+          word: `VENTILADOR`,
+          category: `2. Hardware interno`,
+          def: `Va unido sobre el disipador metálico del microprocesador para airearlo y refrescarlo, evitando que se caliente demasiado.`
+        },
+        {
+          word: `DISCODURO`,
+          category: `2. Hardware interno`,
+          def: `Dispositivo que almacena todos los programas y la información de forma permanente; sus datos se conservan aunque apaguemos el ordenador.`
+        },
+        {
+          word: `IMPRESORA`,
+          category: `3. Periféricos y puertos`,
+          def: `Periférico de salida que imprime la información del ordenador; las impresoras multifuncionales actúan de entrada y salida a la vez.`
+        },
+        {
+          word: `HARDWARE`,
+          category: `2. Hardware interno`,
+          def: `Conjunto de dispositivos físicos que componen el ordenador, frente a las aplicaciones lógicas.`
+        },
+        {
+          word: `SOFTWARE`,
+          category: `1. Concepto general`,
+          def: `Conjunto de aplicaciones y programas que se ejecutan en el ordenador para realizar distintas tareas.`
+        },
+        {
+          word: `CONECTOR`,
+          category: `3. Periféricos y puertos`,
+          def: `Punto o puerto de comunicación mediante el cual se conectan los dispositivos internos y externos al ordenador.`
+        },
+        {
+          word: `CARCASA`,
+          category: `2. Hardware interno`,
+          def: `Caja metálica donde van alojados y protegidos los componentes internos del ordenador.`
+        },
+        {
+          word: `MONITOR`,
+          category: `3. Periféricos y puertos`,
+          def: `Periférico de salida principal que muestra la imagen al usuario; se conecta mediante puertos VGA, DVI o HDMI.`
+        },
+        {
+          word: `TECLADO`,
+          category: `3. Periféricos y puertos`,
+          def: `Periférico de entrada para introducir texto y órdenes; tradicionalmente usa conector PS2 violeta o puerto USB.`
+        },
+        {
+          word: `RATON`,
+          category: `3. Periféricos y puertos`,
+          def: `Periférico de entrada que permite señalar e interactuar con el entorno; emplea conector PS2 verde o puerto USB.`
+        },
+        {
+          word: `BYTE`,
+          category: `1. Información digital`,
+          def: `Conjunto de 8 bits (abreviado B). Permite representar un carácter y sus múltiplos son KB, MB, GB, TB y PB.`
+        },
+        {
+          word: `HDMI`,
+          category: `3. Periféricos y puertos`,
+          def: `Puerto de alta definición que conecta el monitor con el ordenador, sustituyendo o alternando con el conector VGA.`
+        },
+        {
+          word: `SATA`,
+          category: `3. Periféricos y puertos`,
+          def: `Conector interno que sirve para conectar discos duros y unidades ópticas a la placa base; sustituyó al antiguo conector IDE.`
+        },
+        {
+          word: `BIT`,
+          category: `1. Información digital`,
+          def: `La unidad más pequeña de información en un ordenador: puede valer 1 o 0 y se abrevia con la letra b.`
+        },
+        {
+          word: `RAM`,
+          category: `2. Hardware interno`,
+          def: `Memoria temporal y volátil que guarda los datos mientras el ordenador está encendido y los pierde al apagarlo (módulos DDR4).`
+        },
+        {
+          word: `USB`,
+          category: `3. Periféricos y puertos`,
+          def: `Puerto serie muy rápido (hasta 60 MBps en USB 2.0) para conectar pendrives, ratones, teclados, reproductores MP3 y más.`
+        },
+        {
+          word: `VGA`,
+          category: `3. Periféricos y puertos`,
+          def: `Conector clásico que enlaza el monitor con el ordenador, alternado actualmente con puertos digitales como DVI o HDMI.`
+        }
+      ];
+
+      const WORD_LOOKUP = {};
+      for (let i = 0; i < WORDS_DATA.length; i++) {
+        WORD_LOOKUP[WORDS_DATA[i].word] = WORDS_DATA[i];
+      }
+
+      const DIRS_NORMAL = [
+        [0, 1],   // derecha
+        [1, 0],   // abajo
+        [1, 1],   // diagonal abajo-derecha
+        [-1, 1]   // diagonal arriba-derecha
+      ];
+
+      const DIRS_ADVANCED = [
+        [0, 1],
+        [0, -1],
+        [1, 0],
+        [-1, 0],
+        [1, 1],
+        [1, -1],
+        [-1, 1],
+        [-1, -1]
+      ];
+
+      // Spanish weighted fill letters so random filler feels natural
+      const FILL_ALPHABET = `AAABCDEEEFGHIILMNNNOOOPQRRRSSTTUUVXYZAEOIU`;
+
+      // App state
+      let state = {
+        grid: [],
+        placements: {},
+        foundWords: [],
+        hintCells: [],
+        score: 0,
+        elapsedSeconds: 0,
+        hintsUsed: 0,
+        streak: 1,
+        lastFoundAtSec: null,
+        difficulty: `normal`,
+        bestScore: 0,
+        gamesCompleted: 0,
+        selectedConcept: `HARDWARE`,
+        filter: `all`
+      };
+
+      // Transient UI state (not persisted)
+      let isPaused = false;
+      let timerStarted = false;
+      let timerHandle = null;
+      let isDragging = false;
+      let dragStart = null;
+      let dragCells = [];
+      let clickAnchor = null;
+      let focusedCell = { r: 0, c: 0 };
+      let highlightedWordCells = [];
+      let newGameArmed = false;
+      let newGameTimer = null;
+      let feedbackResetTimer = null;
+      let lastSavedTick = 0;
+
+      // DOM elements
+      const gridEl = document.getElementById(`word-grid`);
+      const wordListEl = document.getElementById(`word-list`);
+      const hudFoundEl = document.getElementById(`hud-found`);
+      const hudRemainingEl = document.getElementById(`hud-remaining`);
+      const hudTimerEl = document.getElementById(`hud-timer`);
+      const hudTimerStatusEl = document.getElementById(`hud-timer-status`);
+      const hudScoreEl = document.getElementById(`hud-score`);
+      const hudHintsEl = document.getElementById(`hud-hints`);
+      const hudStreakEl = document.getElementById(`hud-streak`);
+      const progressPctEl = document.getElementById(`progress-pct`);
+      const progressBarEl = document.getElementById(`progress-bar`);
+      const progressFillEl = document.getElementById(`progress-fill`);
+      const bestRecordEl = document.getElementById(`best-record-text`);
+      const selectionPreviewEl = document.getElementById(`selection-preview`);
+      const feedbackPillEl = document.getElementById(`feedback-pill`);
+      const pauseVeilEl = document.getElementById(`pause-veil`);
+      const btnPauseEl = document.getElementById(`btn-pause`);
+      const btnResumeEl = document.getElementById(`btn-resume`);
+      const btnHintEl = document.getElementById(`btn-hint`);
+      const btnNewGameEl = document.getElementById(`btn-new-game`);
+      const btnPlayAgainEl = document.getElementById(`btn-play-again`);
+      const difficultySelectEl = document.getElementById(`difficulty-select`);
+      const victoryBannerEl = document.getElementById(`victory-banner`);
+      const victoryMetricsEl = document.getElementById(`victory-metrics`);
+      const conceptWordEl = document.getElementById(`concept-word`);
+      const conceptCategoryEl = document.getElementById(`concept-category`);
+      const conceptDefEl = document.getElementById(`concept-def`);
+
+      function randInt(max) {
+        return Math.floor(Math.random() * max);
+      }
+
+      function shuffleArray(arr) {
+        const copy = arr.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = randInt(i + 1);
+          const tmp = copy[i];
+          copy[i] = copy[j];
+          copy[j] = tmp;
+        }
+        return copy;
+      }
+
+      function generatePuzzle(difficulty) {
+        const dirs = difficulty === `avanzado` ? DIRS_ADVANCED : DIRS_NORMAL;
+        const sortedWords = WORDS_DATA.map(function (w) { return w.word; }).sort(function (a, b) {
+          return b.length - a.length;
+        });
+
+        for (let attempt = 0; attempt < 250; attempt++) {
+          const board = [];
+          for (let r = 0; r < GRID_SIZE; r++) {
+            const row = [];
+            for (let c = 0; c < GRID_SIZE; c++) {
+              row.push(``);
+            }
+            board.push(row);
+          }
+
+          const placements = {};
+          let allPlaced = true;
+
+          for (let wIdx = 0; wIdx < sortedWords.length; wIdx++) {
+            const word = sortedWords[wIdx];
+            const candidates = [];
+
+            for (let r = 0; r < GRID_SIZE; r++) {
+              for (let c = 0; c < GRID_SIZE; c++) {
+                const shuffledDirs = shuffleArray(dirs);
+                for (let dIdx = 0; dIdx < shuffledDirs.length; dIdx++) {
+                  const dr = shuffledDirs[dIdx][0];
+                  const dc = shuffledDirs[dIdx][1];
+                  const endR = r + dr * (word.length - 1);
+                  const endC = c + dc * (word.length - 1);
+
+                  if (endR < 0 || endR >= GRID_SIZE || endC < 0 || endC >= GRID_SIZE) {
+                    continue;
+                  }
+
+                  let fits = true;
+                  let intersections = 0;
+                  for (let k = 0; k < word.length; k++) {
+                    const nr = r + dr * k;
+                    const nc = c + dc * k;
+                    const existing = board[nr][nc];
+                    if (existing !== `` && existing !== word[k]) {
+                      fits = false;
+                      break;
+                    }
+                    if (existing === word[k]) {
+                      intersections++;
+                    }
+                  }
+
+                  if (fits) {
+                    candidates.push({ r: r, c: c, dr: dr, dc: dc, score: intersections * 10 + Math.random() });
+                  }
+                }
+              }
+            }
+
+            if (candidates.length === 0) {
+              allPlaced = false;
+              break;
+            }
+
+            candidates.sort(function (a, b) { return b.score - a.score; });
+            // Pick among top 4 candidates to keep variety + intersections
+            const topRange = Math.min(4, candidates.length);
+            const chosen = candidates[randInt(topRange)];
+            const cells = [];
+            for (let k = 0; k < word.length; k++) {
+              const nr = chosen.r + chosen.dr * k;
+              const nc = chosen.c + chosen.dc * k;
+              board[nr][nc] = word[k];
+              cells.push([nr, nc]);
+            }
+            placements[word] = cells;
+          }
+
+          if (allPlaced) {
+            for (let r = 0; r < GRID_SIZE; r++) {
+              for (let c = 0; c < GRID_SIZE; c++) {
+                if (board[r][c] === ``) {
+                  board[r][c] = FILL_ALPHABET[randInt(FILL_ALPHABET.length)];
+                }
+              }
+            }
+            return { grid: board, placements: placements };
+          }
+        }
+
+        // Deterministic fallback if random attempts fail
+        return buildFallbackPuzzle();
+      }
+
+      function buildFallbackPuzzle() {
+        const board = [];
+        for (let r = 0; r < GRID_SIZE; r++) {
+          const row = [];
+          for (let c = 0; c < GRID_SIZE; c++) {
+            row.push(``);
+          }
+          board.push(row);
+        }
+        const fixed = [
+          { word: `MICROPROCESADOR`, r: 0, c: 0, dr: 0, dc: 1 },
+          { word: `ALIMENTACION`, r: 1, c: 0, dr: 0, dc: 1 },
+          { word: `PERIFERICO`, r: 2, c: 0, dr: 0, dc: 1 },
+          { word: `VENTILADOR`, r: 3, c: 0, dr: 0, dc: 1 },
+          { word: `DISCODURO`, r: 4, c: 0, dr: 0, dc: 1 },
+          { word: `IMPRESORA`, r: 5, c: 0, dr: 0, dc: 1 },
+          { word: `HARDWARE`, r: 6, c: 0, dr: 0, dc: 1 },
+          { word: `SOFTWARE`, r: 7, c: 0, dr: 0, dc: 1 },
+          { word: `CONECTOR`, r: 8, c: 0, dr: 0, dc: 1 },
+          { word: `CARCASA`, r: 9, c: 0, dr: 0, dc: 1 },
+          { word: `MONITOR`, r: 10, c: 0, dr: 0, dc: 1 },
+          { word: `TECLADO`, r: 11, c: 0, dr: 0, dc: 1 },
+          { word: `RATON`, r: 12, c: 0, dr: 0, dc: 1 },
+          { word: `BYTE`, r: 13, c: 0, dr: 0, dc: 1 },
+          { word: `HDMI`, r: 14, c: 0, dr: 0, dc: 1 },
+          { word: `SATA`, r: 15, c: 0, dr: 0, dc: 1 },
+          { word: `BIT`, r: 12, c: 10, dr: 1, dc: 0 },
+          { word: `RAM`, r: 12, c: 12, dr: 1, dc: 0 },
+          { word: `USB`, r: 12, c: 14, dr: 1, dc: 0 },
+          { word: `VGA`, r: 8, c: 15, dr: 1, dc: 0 }
+        ];
+        const placements = {};
+        for (let i = 0; i < fixed.length; i++) {
+          const item = fixed[i];
+          const cells = [];
+          for (let k = 0; k < item.word.length; k++) {
+            const nr = item.r + item.dr * k;
+            const nc = item.c + item.dc * k;
+            board[nr][nc] = item.word[k];
+            cells.push([nr, nc]);
+          }
+          placements[item.word] = cells;
+        }
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            if (board[r][c] === ``) {
+              board[r][c] = FILL_ALPHABET[randInt(FILL_ALPHABET.length)];
+            }
+          }
+        }
+        return { grid: board, placements: placements };
+      }
+
+      function formatTime(totalSeconds) {
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        return String(mins).padStart(2, `0`) + `:` + String(secs).padStart(2, `0`);
+      }
+
+      function saveState() {
+        if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === `function`) {
+          window.notebookAppApi.setAppState({
+            grid: state.grid,
+            placements: state.placements,
+            foundWords: state.foundWords,
+            hintCells: state.hintCells,
+            score: state.score,
+            elapsedSeconds: state.elapsedSeconds,
+            hintsUsed: state.hintsUsed,
+            streak: state.streak,
+            lastFoundAtSec: state.lastFoundAtSec,
+            difficulty: state.difficulty,
+            bestScore: state.bestScore,
+            gamesCompleted: state.gamesCompleted,
+            selectedConcept: state.selectedConcept,
+            filter: state.filter
+          }).catch(function () {});
+        }
+      }
+
+      function startTimerIfNeeded() {
+        if (isPaused || state.foundWords.length >= WORDS_DATA.length) return;
+        if (!timerStarted) {
+          timerStarted = true;
+          if (hudTimerStatusEl) hudTimerStatusEl.textContent = `En curso`;
+        }
+        if (timerHandle === null) {
+          timerHandle = setInterval(function () {
+            if (!isPaused && state.foundWords.length < WORDS_DATA.length) {
+              state.elapsedSeconds++;
+              if (hudTimerEl) hudTimerEl.textContent = formatTime(state.elapsedSeconds);
+              if (state.elapsedSeconds - lastSavedTick >= 5) {
+                lastSavedTick = state.elapsedSeconds;
+                saveState();
+              }
+            }
+          }, 1000);
+        }
+      }
+
+      function stopTimer() {
+        if (timerHandle !== null) {
+          clearInterval(timerHandle);
+          timerHandle = null;
+        }
+      }
+
+      function cellKey(r, c) {
+        return r + `,` + c;
+      }
+
+      function getFoundCellSet() {
+        const set = new Set();
+        for (let i = 0; i < state.foundWords.length; i++) {
+          const w = state.foundWords[i];
+          const cells = state.placements[w] || [];
+          for (let j = 0; j < cells.length; j++) {
+            set.add(cellKey(cells[j][0], cells[j][1]));
+          }
+        }
+        return set;
+      }
+
+      function getHintCellSet() {
+        const set = new Set();
+        for (let i = 0; i < state.hintCells.length; i++) {
+          set.add(cellKey(state.hintCells[i][0], state.hintCells[i][1]));
+        }
+        return set;
+      }
+
+      function getLineCells(start, end) {
+        if (!start || !end) return [];
+        const dr = end.r - start.r;
+        const dc = end.c - start.c;
+        if (dr === 0 && dc === 0) return [{ r: start.r, c: start.c }];
+
+        // Snap to 8-way straight line if diagonal/horizontal/vertical
+        const absR = Math.abs(dr);
+        const absC = Math.abs(dc);
+        let stepR = 0;
+        let stepC = 0;
+        let steps = 0;
+
+        if (absR === 0) {
+          stepC = dc > 0 ? 1 : -1;
+          steps = absC;
+        } else if (absC === 0) {
+          stepR = dr > 0 ? 1 : -1;
+          steps = absR;
+        } else {
+          // Determine closest axis or 45-degree diagonal
+          const ratio = absR / absC;
+          if (ratio > 2.2) {
+            stepR = dr > 0 ? 1 : -1;
+            steps = absR;
+          } else if (ratio < 0.45) {
+            stepC = dc > 0 ? 1 : -1;
+            steps = absC;
+          } else {
+            stepR = dr > 0 ? 1 : -1;
+            stepC = dc > 0 ? 1 : -1;
+            steps = Math.max(absR, absC);
+          }
+        }
+
+        const result = [];
+        for (let i = 0; i <= steps; i++) {
+          const nr = start.r + stepR * i;
+          const nc = start.c + stepC * i;
+          if (nr < 0 || nr >= GRID_SIZE || nc < 0 || nc >= GRID_SIZE) break;
+          result.push({ r: nr, c: nc });
+        }
+        return result;
+      }
+
+      function isExactRay(start, end) {
+        const dr = end.r - start.r;
+        const dc = end.c - start.c;
+        return dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc);
+      }
+
+      function getSelectionString(cells) {
+        let str = ``;
+        for (let i = 0; i < cells.length; i++) {
+          str += state.grid[cells[i].r][cells[i].c];
+        }
+        return str;
+      }
+
+      function renderGrid() {
+        if (!gridEl) return;
+        const foundSet = getFoundCellSet();
+        const hintSet = getHintCellSet();
+        const selectingSet = new Set();
+        for (let i = 0; i < dragCells.length; i++) {
+          selectingSet.add(cellKey(dragCells[i].r, dragCells[i].c));
+        }
+        const focusWordSet = new Set();
+        for (let i = 0; i < highlightedWordCells.length; i++) {
+          focusWordSet.add(cellKey(highlightedWordCells[i][0], highlightedWordCells[i][1]));
+        }
+
+        const existingButtons = gridEl.querySelectorAll(`.grid-cell`);
+        if (existingButtons.length === GRID_SIZE * GRID_SIZE) {
+          // Fast class + text update without recreating DOM
+          for (let i = 0; i < existingButtons.length; i++) {
+            const btn = existingButtons[i];
+            const r = Number(btn.dataset.row);
+            const c = Number(btn.dataset.col);
+            const key = cellKey(r, c);
+            const ch = state.grid[r][c];
+            if (btn.textContent !== ch) btn.textContent = ch;
+
+            btn.classList.toggle(`is-found`, foundSet.has(key));
+            btn.classList.toggle(`is-hint`, !foundSet.has(key) && hintSet.has(key));
+            btn.classList.toggle(`is-selecting`, selectingSet.has(key));
+            btn.classList.toggle(`is-anchor`, Boolean(clickAnchor && clickAnchor.r === r && clickAnchor.c === c));
+            btn.classList.toggle(`is-word-focus`, focusWordSet.has(key));
+            btn.setAttribute(`tabindex`, focusedCell.r === r && focusedCell.c === c ? `0` : `-1`);
+          }
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        for (let r = 0; r < GRID_SIZE; r++) {
+          for (let c = 0; c < GRID_SIZE; c++) {
+            const btn = document.createElement(`button`);
+            btn.type = `button`;
+            btn.className = `grid-cell`;
+            btn.dataset.row = String(r);
+            btn.dataset.col = String(c);
+            btn.setAttribute(`role`, `gridcell`);
+            btn.setAttribute(`aria-label`, `Fila ` + (r + 1) + `, columna ` + (c + 1) + `: ` + state.grid[r][c]);
+            btn.setAttribute(`tabindex`, r === 0 && c === 0 ? `0` : `-1`);
+            btn.textContent = state.grid[r][c];
+            frag.appendChild(btn);
+          }
+        }
+        gridEl.innerHTML = ``;
+        gridEl.appendChild(frag);
+        renderGrid();
+      }
+
+      function renderHud() {
+        const foundCount = state.foundWords.length;
+        const total = WORDS_DATA.length;
+        const remaining = total - foundCount;
+        const pct = Math.round((foundCount / total) * 100);
+
+        if (hudFoundEl) hudFoundEl.textContent = foundCount + ` / ` + total;
+        if (hudRemainingEl) {
+          hudRemainingEl.textContent = remaining === 0
+            ? `¡Todas encontradas!`
+            : remaining + (remaining === 1 ? ` pendiente` : ` pendientes`);
+        }
+        if (hudTimerEl) hudTimerEl.textContent = formatTime(state.elapsedSeconds);
+        if (hudTimerStatusEl) {
+          if (foundCount >= total) {
+            hudTimerStatusEl.textContent = `Completado`;
+          } else if (isPaused) {
+            hudTimerStatusEl.textContent = `En pausa`;
+          } else if (timerStarted || state.elapsedSeconds > 0) {
+            hudTimerStatusEl.textContent = `En curso`;
+          } else {
+            hudTimerStatusEl.textContent = `Listo para empezar`;
+          }
+        }
+        if (hudScoreEl) hudScoreEl.textContent = String(state.score);
+        if (hudHintsEl) hudHintsEl.textContent = state.hintsUsed + (state.hintsUsed === 1 ? ` pista usada` : ` pistas usadas`);
+        if (hudStreakEl) hudStreakEl.textContent = `x` + state.streak;
+
+        if (progressPctEl) progressPctEl.textContent = pct + `%`;
+        if (progressFillEl) progressFillEl.style.width = pct + `%`;
+        if (progressBarEl) progressBarEl.setAttribute(`aria-valuenow`, String(foundCount));
+        if (bestRecordEl) {
+          bestRecordEl.textContent = state.bestScore > 0
+            ? `Mejor puntuación registrada: ` + state.bestScore + ` pts (` + state.gamesCompleted + ` partidas)`
+            : `Mejor puntuación registrada: —`;
+        }
+
+        if (btnHintEl) {
+          btnHintEl.disabled = isPaused || foundCount >= total;
+        }
+        if (btnPauseEl) {
+          btnPauseEl.disabled = foundCount >= total;
+        }
+
+        if (victoryBannerEl && victoryMetricsEl) {
+          if (foundCount >= total) {
+            victoryBannerEl.classList.add(`is-visible`);
+            victoryMetricsEl.textContent =
+              `Has encontrado las 20 palabras en ` + formatTime(state.elapsedSeconds) +
+              ` con ` + state.score + ` puntos (` + state.hintsUsed + ` pistas).`;
+          } else {
+            victoryBannerEl.classList.remove(`is-visible`);
+          }
+        }
+      }
+
+      function renderConceptCard() {
+        const entry = WORD_LOOKUP[state.selectedConcept] || WORDS_DATA[0];
+        if (conceptWordEl) conceptWordEl.textContent = entry.word;
+        if (conceptCategoryEl) conceptCategoryEl.textContent = entry.category;
+        if (conceptDefEl) conceptDefEl.textContent = entry.def;
+      }
+
+      function renderWordList() {
+        if (!wordListEl) return;
+        const foundSet = new Set(state.foundWords);
+
+        const tabBtns = document.querySelectorAll(`.tab-btn`);
+        for (let i = 0; i < tabBtns.length; i++) {
+          const btn = tabBtns[i];
+          const active = btn.dataset.filter === state.filter;
+          btn.classList.toggle(`is-active`, active);
+          btn.setAttribute(`aria-selected`, active ? `true` : `false`);
+        }
+
+        const sorted = WORDS_DATA.slice().sort(function (a, b) {
+          return a.word.localeCompare(b.word);
+        });
+
+        const visible = sorted.filter(function (item) {
+          const isFound = foundSet.has(item.word);
+          if (state.filter === `found`) return isFound;
+          if (state.filter === `pending`) return !isFound;
+          return true;
+        });
+
+        wordListEl.innerHTML = ``;
+        if (visible.length === 0) {
+          const empty = document.createElement(`li`);
+          empty.className = `word-empty-msg`;
+          empty.textContent = state.filter === `found`
+            ? `Aún no has marcado ninguna palabra. Selecciona letras en el tablero.`
+            : `¡Enhorabuena! No queda ninguna palabra pendiente.`;
+          wordListEl.appendChild(empty);
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        for (let i = 0; i < visible.length; i++) {
+          const item = visible[i];
+          const isFound = foundSet.has(item.word);
+          const li = document.createElement(`li`);
+          const btn = document.createElement(`button`);
+          btn.type = `button`;
+          btn.className = `word-item-btn`;
+          if (isFound) btn.classList.add(`is-found`);
+          if (state.selectedConcept === item.word) btn.classList.add(`is-selected-concept`);
+          btn.dataset.word = item.word;
+          btn.setAttribute(`aria-pressed`, isFound ? `true` : `false`);
+
+          const nameSpan = document.createElement(`span`);
+          nameSpan.className = `word-item-name`;
+          nameSpan.textContent = item.word;
+
+          const badgeSpan = document.createElement(`span`);
+          badgeSpan.className = `word-status-badge`;
+          badgeSpan.textContent = isFound ? `OK` : String(item.word.length);
+
+          btn.appendChild(nameSpan);
+          btn.appendChild(badgeSpan);
+          li.appendChild(btn);
+          frag.appendChild(li);
+        }
+        wordListEl.appendChild(frag);
+      }
+
+      function setFeedback(text, tone) {
+        if (!feedbackPillEl) return;
+        feedbackPillEl.textContent = text;
+        feedbackPillEl.className = `feedback-pill`;
+        if (tone === `ok`) feedbackPillEl.classList.add(`feedback-pill--ok`);
+        if (tone === `err`) feedbackPillEl.classList.add(`feedback-pill--err`);
+        if (tone === `info`) feedbackPillEl.classList.add(`feedback-pill--info`);
+
+        if (feedbackResetTimer !== null) {
+          clearTimeout(feedbackResetTimer);
+        }
+        feedbackResetTimer = setTimeout(function () {
+          if (feedbackPillEl) {
+            feedbackPillEl.textContent = `Arrastra o toca inicio y fin`;
+            feedbackPillEl.className = `feedback-pill`;
+          }
+        }, 3200);
+      }
+
+      function updateSelectionPreview(cells) {
+        if (!selectionPreviewEl) return;
+        if (!cells || cells.length === 0) {
+          selectionPreviewEl.textContent = `—`;
+          return;
+        }
+        selectionPreviewEl.textContent = getSelectionString(cells);
+      }
+
+      function flashErrorCells(cells) {
+        if (!gridEl || !cells || cells.length === 0) return;
+        const buttons = [];
+        for (let i = 0; i < cells.length; i++) {
+          const sel = `.grid-cell[data-row="` + cells[i].r + `"][data-col="` + cells[i].c + `"]`;
+          const el = gridEl.querySelector(sel);
+          if (el) {
+            el.classList.add(`is-error-flash`);
+            buttons.push(el);
+          }
+        }
+        setTimeout(function () {
+          for (let i = 0; i < buttons.length; i++) {
+            buttons[i].classList.remove(`is-error-flash`);
+          }
+        }, 280);
+      }
+
+      function validateSelection(cells) {
+        if (!cells || cells.length < 3) {
+          updateSelectionPreview([]);
+          return;
+        }
+        const forward = getSelectionString(cells);
+        const backward = forward.split(``).reverse().join(``);
+
+        let matchedWord = null;
+        if (WORD_LOOKUP[forward]) {
+          matchedWord = forward;
+        } else if (WORD_LOOKUP[backward]) {
+          matchedWord = backward;
+        }
+
+        if (!matchedWord) {
+          flashErrorCells(cells);
+          setFeedback(`"` + forward + `" no está en la lista`, `err`);
+          updateSelectionPreview([]);
+          return;
+        }
+
+        if (state.foundWords.indexOf(matchedWord) !== -1) {
+          state.selectedConcept = matchedWord;
+          renderConceptCard();
+          renderWordList();
+          setFeedback(matchedWord + ` ya estaba completada`, `info`);
+          updateSelectionPreview([]);
+          return;
+        }
+
+        // Valid new match!
+        startTimerIfNeeded();
+        state.foundWords.push(matchedWord);
+        state.selectedConcept = matchedWord;
+
+        // Remove any hint cells belonging to this found word
+        const placed = state.placements[matchedWord] || [];
+        const placedKeys = new Set(placed.map(function (p) { return cellKey(p[0], p[1]); }));
+        state.hintCells = state.hintCells.filter(function (hc) {
+          return !placedKeys.has(cellKey(hc[0], hc[1]));
+        });
+
+        // Streak & score calculation
+        if (state.lastFoundAtSec !== null && (state.elapsedSeconds - state.lastFoundAtSec) <= 20) {
+          state.streak = Math.min(4, state.streak + 1);
+        } else {
+          state.streak = 1;
+        }
+        state.lastFoundAtSec = state.elapsedSeconds;
+
+        const basePoints = 100 + matchedWord.length * 10;
+        const streakBonus = (state.streak - 1) * 25;
+        let gained = basePoints + streakBonus;
+        let completionMsg = ``;
+
+        if (state.foundWords.length === WORDS_DATA.length) {
+          stopTimer();
+          const speedBonus = Math.max(50, 500 - state.elapsedSeconds);
+          gained += speedBonus;
+          state.gamesCompleted++;
+          completionMsg = ` · ¡Bono final +` + speedBonus + `!`;
+        }
+
+        state.score += gained;
+        if (state.score > state.bestScore) {
+          state.bestScore = state.score;
+        }
+
+        setFeedback(`¡` + matchedWord + `! +` + gained + ` pts` + completionMsg, `ok`);
+        updateSelectionPreview([]);
+        renderGrid();
+        renderHud();
+        renderConceptCard();
+        renderWordList();
+        saveState();
+      }
+
+      function getCellFromPoint(clientX, clientY) {
+        const el = document.elementFromPoint(clientX, clientY);
+        if (!el || !el.classList || !el.classList.contains(`grid-cell`)) return null;
+        return {
+          r: Number(el.dataset.row),
+          c: Number(el.dataset.col)
+        };
+      }
+
+      function onGridPointerDown(e) {
+        if (isPaused || state.foundWords.length >= WORDS_DATA.length) return;
+        const cellEl = e.target.closest(`.grid-cell`);
+        if (!cellEl) return;
+        const r = Number(cellEl.dataset.row);
+        const c = Number(cellEl.dataset.col);
+
+        startTimerIfNeeded();
+        focusedCell = { r: r, c: c };
+
+        if (e.pointerType === `mouse` && e.button !== 0) return;
+        isDragging = true;
+        dragStart = { r: r, c: c };
+        dragCells = [{ r: r, c: c }];
+        highlightedWordCells = [];
+        updateSelectionPreview(dragCells);
+        renderGrid();
+      }
+
+      function onWindowPointerMove(e) {
+        if (!isDragging || !dragStart || isPaused) return;
+        const target = getCellFromPoint(e.clientX, e.clientY);
+        if (!target) return;
+        dragCells = getLineCells(dragStart, target);
+        updateSelectionPreview(dragCells);
+        renderGrid();
+      }
+
+      function onWindowPointerUp() {
+        if (!isDragging) return;
+        isDragging = false;
+        const currentCells = dragCells.slice();
+        const start = dragStart;
+        dragStart = null;
+        dragCells = [];
+
+        if (currentCells.length === 1 && start) {
+          // Single tap/click: support two-click start -> end selection
+          if (!clickAnchor) {
+            clickAnchor = { r: start.r, c: start.c };
+            updateSelectionPreview([clickAnchor]);
+            setFeedback(`Ahora toca la última letra`, `info`);
+            renderGrid();
+            return;
+          }
+          if (clickAnchor.r === start.r && clickAnchor.c === start.c) {
+            clickAnchor = null;
+            updateSelectionPreview([]);
+            renderGrid();
+            return;
+          }
+          const line = isExactRay(clickAnchor, start)
+            ? getLineCells(clickAnchor, start)
+            : [];
+          clickAnchor = null;
+          if (line.length < 3) {
+            setFeedback(`La línea debe ser recta o diagonal`, `err`);
+            updateSelectionPreview([]);
+            renderGrid();
+            return;
+          }
+          renderGrid();
+          validateSelection(line);
+          return;
+        }
+
+        clickAnchor = null;
+        renderGrid();
+        validateSelection(currentCells);
+      }
+
+      function onGridKeyDown(e) {
+        if (isPaused) return;
+        const cellEl = e.target.closest(`.grid-cell`);
+        if (!cellEl) return;
+        const r = Number(cellEl.dataset.row);
+        const c = Number(cellEl.dataset.col);
+        let nr = r;
+        let nc = c;
+
+        if (e.key === `ArrowUp`) nr = Math.max(0, r - 1);
+        else if (e.key === `ArrowDown`) nr = Math.min(GRID_SIZE - 1, r + 1);
+        else if (e.key === `ArrowLeft`) nc = Math.max(0, c - 1);
+        else if (e.key === `ArrowRight`) nc = Math.min(GRID_SIZE - 1, c + 1);
+        else if (e.key === `Escape`) {
+          clickAnchor = null;
+          dragCells = [];
+          updateSelectionPreview([]);
+          renderGrid();
+          return;
+        } else if (e.key === `Enter` || e.key === ` `) {
+          e.preventDefault();
+          startTimerIfNeeded();
+          const here = { r: r, c: c };
+          if (!clickAnchor) {
+            clickAnchor = here;
+            updateSelectionPreview([here]);
+            setFeedback(`Origen fijado: muévete a la última letra y pulsa Intro`, `info`);
+            renderGrid();
+          } else if (clickAnchor.r === r && clickAnchor.c === c) {
+            clickAnchor = null;
+            updateSelectionPreview([]);
+            renderGrid();
+          } else {
+            const line = isExactRay(clickAnchor, here) ? getLineCells(clickAnchor, here) : [];
+            clickAnchor = null;
+            renderGrid();
+            if (line.length < 3) {
+              setFeedback(`La línea debe ser recta o diagonal`, `err`);
+              updateSelectionPreview([]);
+            } else {
+              validateSelection(line);
+            }
+          }
+          return;
+        } else {
+          return;
+        }
+
+        e.preventDefault();
+        focusedCell = { r: nr, c: nc };
+        renderGrid();
+        if (gridEl) {
+          const nextBtn = gridEl.querySelector(`.grid-cell[data-row="` + nr + `"][data-col="` + nc + `"]`);
+          if (nextBtn) nextBtn.focus();
+        }
+        if (clickAnchor && isExactRay(clickAnchor, focusedCell)) {
+          updateSelectionPreview(getLineCells(clickAnchor, focusedCell));
+        }
+      }
+
+      function togglePause(forcePause) {
+        if (state.foundWords.length >= WORDS_DATA.length) return;
+        isPaused = typeof forcePause === `boolean` ? forcePause : !isPaused;
+        if (pauseVeilEl) {
+          pauseVeilEl.classList.toggle(`is-visible`, isPaused);
+          pauseVeilEl.setAttribute(`aria-hidden`, isPaused ? `false` : `true`);
+        }
+        if (btnPauseEl) {
+          btnPauseEl.innerHTML = isPaused
+            ? `<i data-lucide="play" aria-hidden="true"></i><span>Reanudar</span>`
+            : `<i data-lucide="pause" aria-hidden="true"></i><span>Pausar</span>`;
+          if (window.lucide && typeof window.lucide.createIcons === `function`) {
+            window.lucide.createIcons();
+          }
+        }
+        renderHud();
+      }
+
+      function giveHint() {
+        if (isPaused || state.foundWords.length >= WORDS_DATA.length) return;
+        const foundSet = new Set(state.foundWords);
+        const pending = WORDS_DATA.filter(function (w) { return !foundSet.has(w.word); });
+        if (pending.length === 0) return;
+
+        startTimerIfNeeded();
+        // Prefer currently selected concept if pending, else random pending
+        let targetWord = pending[randInt(pending.length)].word;
+        if (!foundSet.has(state.selectedConcept) && state.placements[state.selectedConcept]) {
+          targetWord = state.selectedConcept;
+        }
+
+        const cells = state.placements[targetWord];
+        if (!cells || cells.length === 0) return;
+
+        // Reveal first unrevealed cell of that word
+        const hintSet = getHintCellSet();
+        let revealCell = cells[0];
+        for (let i = 0; i < cells.length; i++) {
+          if (!hintSet.has(cellKey(cells[i][0], cells[i][1]))) {
+            revealCell = cells[i];
+            break;
+          }
+        }
+
+        state.hintCells.push([revealCell[0], revealCell[1]]);
+        state.hintsUsed++;
+        state.score = Math.max(0, state.score - 30);
+        state.selectedConcept = targetWord;
+        state.streak = 1;
+
+        setFeedback(`Pista para ` + targetWord + ` (-30 pts)`, `info`);
+        renderGrid();
+        renderHud();
+        renderConceptCard();
+        renderWordList();
+        saveState();
+      }
+
+      function startNewGame(skipConfirm) {
+        const hasProgress = state.foundWords.length > 0 && state.foundWords.length < WORDS_DATA.length;
+        if (!skipConfirm && hasProgress && !newGameArmed) {
+          newGameArmed = true;
+          if (btnNewGameEl) {
+            btnNewGameEl.classList.add(`btn-danger-armed`);
+            btnNewGameEl.innerHTML = `<i data-lucide="alert-circle" aria-hidden="true"></i><span>¿Confirmar nueva?</span>`;
+            if (window.lucide && typeof window.lucide.createIcons === `function`) {
+              window.lucide.createIcons();
+            }
+          }
+          if (newGameTimer !== null) clearTimeout(newGameTimer);
+          newGameTimer = setTimeout(function () {
+            resetNewGameButton();
+          }, 3500);
+          return;
+        }
+
+        resetNewGameButton();
+        stopTimer();
+        isPaused = false;
+        timerStarted = false;
+        clickAnchor = null;
+        dragCells = [];
+        highlightedWordCells = [];
+        if (pauseVeilEl) {
+          pauseVeilEl.classList.remove(`is-visible`);
+          pauseVeilEl.setAttribute(`aria-hidden`, `true`);
+        }
+
+        const generated = generatePuzzle(state.difficulty);
+        state.grid = generated.grid;
+        state.placements = generated.placements;
+        state.foundWords = [];
+        state.hintCells = [];
+        state.score = 0;
+        state.elapsedSeconds = 0;
+        state.hintsUsed = 0;
+        state.streak = 1;
+        state.lastFoundAtSec = null;
+
+        updateSelectionPreview([]);
+        setFeedback(`Tablero nuevo listo`, `info`);
+        renderGrid();
+        renderHud();
+        renderConceptCard();
+        renderWordList();
+        saveState();
+      }
+
+      function resetNewGameButton() {
+        newGameArmed = false;
+        if (newGameTimer !== null) {
+          clearTimeout(newGameTimer);
+          newGameTimer = null;
+        }
+        if (btnNewGameEl) {
+          btnNewGameEl.classList.remove(`btn-danger-armed`);
+          btnNewGameEl.innerHTML = `<i data-lucide="rotate-cw" aria-hidden="true"></i><span>Nueva partida</span>`;
+          if (window.lucide && typeof window.lucide.createIcons === `function`) {
+            window.lucide.createIcons();
+          }
+        }
+      }
+
+      function onWordItemClick(e) {
+        const btn = e.target.closest(`.word-item-btn`);
+        if (!btn) return;
+        const word = btn.dataset.word;
+        if (!word || !WORD_LOOKUP[word]) return;
+
+        state.selectedConcept = word;
+        if (state.foundWords.indexOf(word) !== -1 && state.placements[word]) {
+          highlightedWordCells = state.placements[word];
+          setTimeout(function () {
+            highlightedWordCells = [];
+            renderGrid();
+          }, 1100);
+        } else {
+          highlightedWordCells = [];
+        }
+        renderGrid();
+        renderConceptCard();
+        renderWordList();
+        saveState();
+      }
+
+      function onFilterTabClick(e) {
+        const btn = e.target.closest(`.tab-btn`);
+        if (!btn) return;
+        const filter = btn.dataset.filter;
+        if (!filter) return;
+        state.filter = filter;
+        renderWordList();
+        saveState();
+      }
+
+      function bindEvents() {
+        if (gridEl) {
+          gridEl.addEventListener(`pointerdown`, onGridPointerDown);
+          gridEl.addEventListener(`keydown`, onGridKeyDown);
+        }
+        window.addEventListener(`pointermove`, onWindowPointerMove);
+        window.addEventListener(`pointerup`, onWindowPointerUp);
+        window.addEventListener(`pointercancel`, onWindowPointerUp);
+
+        if (btnPauseEl) {
+          btnPauseEl.addEventListener(`click`, function () { togglePause(); });
+        }
+        if (btnResumeEl) {
+          btnResumeEl.addEventListener(`click`, function () { togglePause(false); });
+        }
+        if (btnHintEl) {
+          btnHintEl.addEventListener(`click`, giveHint);
+        }
+        if (btnNewGameEl) {
+          btnNewGameEl.addEventListener(`click`, function () { startNewGame(false); });
+        }
+        if (btnPlayAgainEl) {
+          btnPlayAgainEl.addEventListener(`click`, function () { startNewGame(true); });
+        }
+        if (difficultySelectEl) {
+          difficultySelectEl.addEventListener(`change`, function (e) {
+            state.difficulty = e.target.value === `avanzado` ? `avanzado` : `normal`;
+            startNewGame(true);
+          });
+        }
+        if (wordListEl) {
+          wordListEl.addEventListener(`click`, onWordItemClick);
+        }
+        const filterContainer = document.querySelector(`.filter-tabs`);
+        if (filterContainer) {
+          filterContainer.addEventListener(`click`, onFilterTabClick);
+        }
+      }
+
+      async function init() {
+        bindEvents();
+
+        let restored = null;
+        if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === `function`) {
+          try {
+            restored = await window.notebookAppApi.getAppState();
+          } catch (err) {
+            restored = null;
+          }
+        }
+
+        if (restored && Array.isArray(restored.grid) && restored.grid.length === GRID_SIZE && restored.placements) {
+          state.grid = restored.grid;
+          state.placements = restored.placements;
+          state.foundWords = Array.isArray(restored.foundWords) ? restored.foundWords : [];
+          state.hintCells = Array.isArray(restored.hintCells) ? restored.hintCells : [];
+          state.score = typeof restored.score === `number` ? restored.score : 0;
+          state.elapsedSeconds = typeof restored.elapsedSeconds === `number` ? restored.elapsedSeconds : 0;
+          state.hintsUsed = typeof restored.hintsUsed === `number` ? restored.hintsUsed : 0;
+          state.streak = typeof restored.streak === `number` ? restored.streak : 1;
+          state.lastFoundAtSec = typeof restored.lastFoundAtSec === `number` ? restored.lastFoundAtSec : null;
+          state.difficulty = restored.difficulty === `avanzado` ? `avanzado` : `normal`;
+          state.bestScore = typeof restored.bestScore === `number` ? restored.bestScore : 0;
+          state.gamesCompleted = typeof restored.gamesCompleted === `number` ? restored.gamesCompleted : 0;
+          state.selectedConcept = restored.selectedConcept && WORD_LOOKUP[restored.selectedConcept]
+            ? restored.selectedConcept
+            : `HARDWARE`;
+          state.filter = restored.filter || `all`;
+        } else {
+          const generated = generatePuzzle(state.difficulty);
+          state.grid = generated.grid;
+          state.placements = generated.placements;
+        }
+
+        if (difficultySelectEl) {
+          difficultySelectEl.value = state.difficulty;
+        }
+
+        renderGrid();
+        renderHud();
+        renderConceptCard();
+        renderWordList();
+
+        if (state.elapsedSeconds > 0 && state.foundWords.length < WORDS_DATA.length) {
+          startTimerIfNeeded();
+        }
+
+        if (window.lucide && typeof window.lucide.createIcons === `function`) {
+          window.lucide.createIcons();
+        }
+
+        if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === `function`) {
+          window.notebookAppApi.notifyAppReady();
+        }
+      }
+
+      if (document.readyState === `loading`) {
+        document.addEventListener(`DOMContentLoaded`, init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
