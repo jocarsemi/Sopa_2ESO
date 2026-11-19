@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reto de Componentes Informáticos · 4º ESO</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --panel-2:#273449;
+    --accent:#38bdf8; --accent-2:#22d3ee;
+    --text:#e2e8f0; --muted:#94a3b8;
+    --ok:#34d399; --warn:#fbbf24; --border:#334155;
+    --shadow:0 20px 40px rgba(0,0,0,.35); --radius:18px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #1e3a5f 0%, transparent 55%),
+      radial-gradient(1000px 500px at 110% 110%, #164e63 0%, transparent 50%),
+      var(--bg);
+    color:var(--text); display:flex;flex-direction:column;align-items:center;
+    min-height:100vh;padding:24px 16px 40px;
+  }
+  header{width:100%;max-width:1100px;display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+  .brand{display:flex;align-items:center;gap:14px}
+  .logo{width:46px;height:46px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-size:22px;box-shadow:0 0 22px rgba(56,189,248,.45)}
+  h1{font-size:1.25rem;font-weight:700;letter-spacing:.3px}
+  .subtitle{font-size:.8rem;color:var(--muted);margin-top:2px}
+  .progress-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:6px;min-width:220px}
+  .progress-label{font-size:.78rem;color:var(--muted);letter-spacing:.5px}
+  .progress-bar{width:220px;height:10px;border-radius:999px;background:#0b1220;overflow:hidden;border:1px solid var(--border)}
+  .progress-fill{height:100%;width:0%;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));transition:width .45s ease}
+  main{width:100%;max-width:1100px;flex:1;display:flex;flex-direction:column}
+  .card{
+    background:linear-gradient(180deg,var(--panel),var(--panel-2));
+    border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:38px 40px 30px;
+    display:flex;flex-direction:column;gap:26px;min-height:430px;
+    justify-content:space-between;position:relative;overflow:hidden;
+  }
+  .card::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent-2),#a78bfa)}
+  .meta-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+  .badge{display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;padding:8px 16px;border-radius:999px;border:1px solid var(--border);background:#0b1220;color:var(--accent)}
+  .badge.vocab{color:#a78bfa;border-color:#4c1d95}
+  .badge.gloss{color:var(--accent);border-color:#0c4a6e}
+  .counter{font-size:.8rem;color:var(--muted)}
+  .question{font-size:clamp(1.5rem,3.1vw,2.35rem);font-weight:700;line-height:1.3;letter-spacing:.2px;min-height:120px;display:flex;align-items:center}
+  .question .term{color:var(--warn);border-bottom:3px dotted var(--warn);padding-bottom:2px}
+  .answer-box{background:#0b1220;border:1px dashed var(--border);border-radius:14px;padding:22px 24px;min-height:96px;display:flex;flex-direction:column;gap:8px;transition:border-color .3s,background .3s}
+  .answer-box.revealed{border-color:var(--ok);background:#0a1f1a}
+  .answer-label{font-size:.72rem;letter-spacing:1.6px;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .answer-text{font-size:clamp(1.05rem,1.9vw,1.35rem);line-height:1.5;color:var(--ok);font-weight:600}
+  .answer-text.hidden{color:var(--muted);font-weight:400;font-style:italic}
+  .controls{display:flex;gap:14px;flex-wrap:wrap;justify-content:space-between;align-items:center}
+  .controls-right{display:flex;gap:14px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:1rem;font-weight:700;letter-spacing:.4px;border:none;border-radius:12px;padding:15px 26px;cursor:pointer;transition:transform .12s ease,box-shadow .2s ease,background .2s ease,opacity .2s;display:inline-flex;align-items:center;gap:9px}
+  button:active{transform:translateY(2px)}
+  button:disabled{opacity:.35;cursor:not-allowed;transform:none}
+  .btn-reveal{background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#1a1200;box-shadow:0 8px 22px rgba(251,191,36,.28)}
+  .btn-reveal:hover:not(:disabled){box-shadow:0 10px 28px rgba(251,191,36,.45)}
+  .btn-next{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#04222e;box-shadow:0 8px 22px rgba(34,211,238,.28)}
+  .btn-next:hover:not(:disabled){box-shadow:0 10px 28px rgba(34,211,238,.45)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);font-weight:600;padding:15px 20px}
+  .btn-ghost:hover{color:var(--text);border-color:#475569}
+  .hint{font-size:.78rem;color:var(--muted);text-align:center;margin-top:16px}
+  .finish{display:none;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:60px 20px}
+  .finish.show{display:flex}
+  .finish h2{font-size:2rem;background:linear-gradient(90deg,var(--accent),#a78bfa);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .finish p{color:var(--muted);font-size:1.05rem}
+  @media (max-width:640px){
+    .card{padding:26px 20px 22px}
+    .controls{flex-direction:column;align-items:stretch}
+    .controls-right{flex-direction:column}
+    button{width:100%;justify-content:center}
+    .progress-wrap{align-items:flex-start;min-width:0;width:100%}
+    .progress-bar{width:100%}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div class="logo">💻</div>
+    <div>
+      <h1>Reto de Componentes Informáticos</h1>
+      <div class="subtitle">Glosario y vocabulario técnico · Digitalización 4º ESO (Unidades 1–4)</div>
+    </div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label" id="progressLabel">Pregunta 0 de 0</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+</header>
+
+<main>
+  <section class="card" id="gameCard">
+    <div class="meta-row">
+      <span class="badge" id="typeBadge">Glosario</span>
+      <span class="counter" id="counter">—</span>
+    </div>
+    <div class="question" id="questionText">Pulsa «Empezar» para lanzar la primera pregunta.</div>
+    <div class="answer-box" id="answerBox">
+      <div class="answer-label">Respuesta</div>
+      <div class="answer-text hidden" id="answerText">Pulsa «Mostrar respuesta» cuando el alumno haya contestado en voz alta.</div>
+    </div>
+    <div class="controls">
+      <button class="btn-ghost" id="btnStart">▶ Empezar</button>
+      <div class="controls-right">
+        <button class="btn-reveal" id="btnReveal" disabled>👁 Mostrar respuesta</button>
+        <button class="btn-next" id="btnNext" disabled>Siguiente ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="finish" id="finishScreen">
+    <h2>¡Ronda completada!</h2>
+    <p>Se han proyectado todas las preguntas de glosario y vocabulario.</p>
+    <button class="btn-next" id="btnRestart">↻ Reiniciar</button>
+  </section>
+
+  <p class="hint">Cada alumno responde a 2 preguntas: una de glosario y otra de vocabulario. El profesor revela la respuesta cuando lo considere oportuno.</p>
+</main>
+
+<script>
+/* ============================================================
+   BANCO DE PREGUNTAS — basado en el glosario y vocabulario
+   del temario (Unidades 1–4).
+
+   GLOSARIO: definiciones conceptuales, SIN traducción al inglés.
+   VOCABULARIO: traducción bidireccional alternada.
+     - ES → EN: pregunta en español, respuesta en inglés.
+     - EN → ES: pregunta en inglés, respuesta en español.
+   ============================================================ */
+
+const glosario = [
+  { q: "¿Qué es la <span class='term'>placa base</span>?", a: "Placa principal del equipo donde se conectan la CPU, la RAM, el almacenamiento, la GPU y los periféricos, y que interconecta todos los componentes." },
+  { q: "Define <span class='term'>CPU</span>.", a: "Unidad Central de Proceso: chip que ejecuta las instrucciones y coordina el resto de componentes; incluye núcleos y caché." },
+  { q: "¿Qué es la <span class='term'>memoria RAM</span>?", a: "Memoria principal volátil donde se cargan datos e instrucciones en ejecución; se pierde al apagar el equipo." },
+  { q: "Explica qué es un <span class='term'>HDD</span>.", a: "Disco duro magnético con platos y cabezales móviles; almacenamiento masivo no volátil, más lento que un SSD." },
+  { q: "¿Qué es una <span class='term'>unidad de estado sólido (SSD)</span>?", a: "Almacenamiento no volátil basado en memoria flash, sin partes móviles; mucho más rápido y silencioso que un HDD." },
+  { q: "Define <span class='term'>NVMe</span>.", a: "Protocolo de acceso a SSD sobre PCIe que aprovecha el paralelismo y reduce la latencia frente a SATA." },
+  { q: "¿Qué es la <span class='term'>GPU</span>?", a: "Procesador especializado en cálculos gráficos y paralelos; puede ser integrada o dedicada." },
+  { q: "Explica qué es la <span class='term'>fuente de alimentación</span>.", a: "Componente que convierte la corriente alterna de la red en corriente continua estable para alimentar los componentes del equipo." },
+  { q: "¿Qué es un <span class='term'>periférico</span>?", a: "Dispositivo externo o interno que aporta entrada, salida o ambas al ordenador (teclado, monitor, impresora, etc.)." },
+  { q: "Define <span class='term'>puerto / conector</span>.", a: "Interfaz física (USB-A/C, HDMI, Ethernet, jack) que permite conectar periféricos y transmitir datos o energía." },
+  { q: "¿Qué es un <span class='term'>núcleo</span> de CPU?", a: "Unidad de ejecución independiente dentro del procesador; a más núcleos, más tareas simultáneas." },
+  { q: "Explica qué es un <span class='term'>socket</span>.", a: "Zócalo de la placa base donde se inserta la CPU; su tipo debe coincidir con el del procesador." },
+  { q: "¿Qué es una <span class='term'>ranura de expansión</span>?", a: "Conector de la placa base (PCIe, etc.) para insertar tarjetas que añaden funciones (GPU, red, sonido)." },
+  { q: "Define <span class='term'>pin / patilla</span>.", a: "Contacto metálico de un conector o chip que transmite señal o alimentación; su alineación es crítica al montar." },
+  { q: "¿Qué es una <span class='term'>pulsera antiestática</span>?", a: "Dispositivo que descarga la electricidad estática del cuerpo para proteger componentes electrónicos durante el montaje." },
+  { q: "Explica qué es la <span class='term'>gestión de cables</span>.", a: "Organización de los cables dentro de la caja para mejorar el flujo de aire, la refrigeración y el mantenimiento." },
+  { q: "¿Qué es el <span class='term'>panel frontal</span>?", a: "Conjunto de botones, LEDs y conectores (USB, audio) situados en la parte delantera de la caja." },
+  { q: "Define <span class='term'>descarga electrostática (ESD)</span>.", a: "Transferencia repentina de carga eléctrica entre cuerpos que puede dañar componentes sensibles; se evita con pulsera y buenas prácticas." },
+  { q: "¿Qué es una <span class='term'>ficha técnica</span>?", a: "Documento que recoge las especificaciones objetivas de un componente o equipo (frecuencia, capacidad, potencia, etc.)." },
+  { q: "Explica el término <span class='term'>prestaciones</span>.", a: "Rendimiento medible de un equipo o componente en tareas reales o benchmarks." },
+  { q: "¿Qué es el <span class='term'>presupuesto</span> en una compra de equipo?", a: "Cantidad máxima de dinero disponible para adquirir el equipo; condiciona las elecciones de componentes." },
+  { q: "Define <span class='term'>garantía</span>.", a: "Compromiso del fabricante o vendedor de reparar o sustituir un producto defectuoso durante un plazo determinado." },
+  { q: "¿Qué es la <span class='term'>relación calidad-precio</span>?", a: "Valoración de cuántas prestaciones se obtienen por el dinero invertido; criterio clave en la compra." },
+  { q: "Explica qué es la <span class='term'>obsolescencia programada</span>.", a: "Estrategia de diseño que acorta deliberadamente la vida útil de un producto para incentivar su sustitución." },
+  { q: "¿Qué es la <span class='term'>reparabilidad</span>?", a: "Facilidad con la que un equipo puede ser reparado (acceso a piezas, documentación, disponibilidad de recambios)." }
+];
+
+/* Cada entrada tiene:
+   - es: término en español
+   - en: término en inglés
+   - def: definición breve (se muestra como apoyo en la respuesta de traducción)
+*/
+const vocabulario = [
+  { es:"placa base", en:"motherboard", def:"placa principal que interconecta todos los componentes" },
+  { es:"procesador", en:"CPU / processor", def:"chip que ejecuta las instrucciones" },
+  { es:"memoria RAM", en:"RAM memory", def:"memoria principal volátil de trabajo" },
+  { es:"disco duro", en:"hard disk drive (HDD)", def:"almacenamiento magnético con platos y cabezales" },
+  { es:"unidad de estado sólido", en:"solid state drive (SSD)", def:"almacenamiento flash sin partes móviles" },
+  { es:"tarjeta gráfica", en:"graphics card (GPU)", def:"procesador especializado en gráficos y cálculo paralelo" },
+  { es:"fuente de alimentación", en:"power supply unit (PSU)", def:"convierte la corriente alterna en continua para los componentes" },
+  { es:"periférico", en:"peripheral device", def:"dispositivo de entrada, salida o mixto conectado al equipo" },
+  { es:"puerto / conector", en:"port / connector", def:"interfaz física para conectar periféricos o transmitir datos/energía" },
+  { es:"núcleo", en:"core", def:"unidad de ejecución independiente del procesador" },
+  { es:"socket", en:"socket", def:"zócalo de la placa base donde se inserta la CPU" },
+  { es:"ranura de expansión", en:"expansion slot", def:"conector para tarjetas adicionales (PCIe, etc.)" },
+  { es:"pin / patilla", en:"pin", def:"contacto metálico de un conector o chip" },
+  { es:"pulsera antiestática", en:"anti-static wrist strap", def:"protege los componentes de descargas electrostáticas" },
+  { es:"gestión de cables", en:"cable management", def:"organización de los cables dentro de la caja" },
+  { es:"panel frontal", en:"front panel", def:"botones, LEDs y conectores de la parte delantera de la caja" },
+  { es:"descarga electrostática", en:"electrostatic discharge (ESD)", def:"transferencia de carga que puede dañar componentes" },
+  { es:"ficha técnica", en:"spec sheet", def:"documento con las especificaciones de un producto" },
+  { es:"prestaciones", en:"performance", def:"rendimiento medible de un equipo o componente" },
+  { es:"presupuesto", en:"budget", def:"dinero máximo disponible para la compra" },
+  { es:"garantía", en:"warranty", def:"compromiso de reparación o sustitución durante un plazo" },
+  { es:"relación calidad-precio", en:"value for money", def:"prestaciones obtenidas por el dinero invertido" },
+  { es:"marca / modelo", en:"brand / model", def:"identificación comercial del producto" },
+  { es:"obsolescencia programada", en:"planned obsolescence", def:"acortamiento deliberado de la vida útil del producto" },
+  { es:"reparabilidad", en:"repairability", def:"facilidad de reparación de un equipo" }
+];
+
+/* ============================================================
+   MEZCLADO (Fisher–Yates)
+   ============================================================ */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/* ============================================================
+   ESTADO DEL JUEGO
+   ============================================================ */
+const TOTAL_ROUNDS = 25; // 25 rondas -> 25 glosario + 25 vocabulario
+
+let rounds = [];
+let index = -1;
+let revealed = false;
+let started = false;
+
+const el = {
+  badge: document.getElementById('typeBadge'),
+  counter: document.getElementById('counter'),
+  question: document.getElementById('questionText'),
+  answerBox: document.getElementById('answerBox'),
+  answer: document.getElementById('answerText'),
+  btnStart: document.getElementById('btnStart'),
+  btnReveal: document.getElementById('btnReveal'),
+  btnNext: document.getElementById('btnNext'),
+  progressLabel: document.getElementById('progressLabel'),
+  progressFill: document.getElementById('progressFill'),
+  gameCard: document.getElementById('gameCard'),
+  finish: document.getElementById('finishScreen'),
+  btnRestart: document.getElementById('btnRestart')
+};
+
+/* Construye las rondas alternando glosario y vocabulario.
+   En vocabulario, la dirección de traducción se alterna:
+   ronda par -> ES→EN, ronda impar -> EN→ES. */
+function buildRounds(){
+  const g = shuffle(glosario);
+  const v = shuffle(vocabulario);
+  const total = Math.min(TOTAL_ROUNDS, g.length, v.length);
+  const out = [];
+
+  for(let i = 0; i < total; i++){
+    // Glosario (sin traducción)
+    out.push({
+      type:'glosario',
+      badge:'Glosario',
+      badgeClass:'gloss',
+      q: g[i].q,
+      a: g[i].a
+    });
+
+    // Vocabulario: alternar dirección según i
+    const item = v[i];
+    if(i % 2 === 0){
+      // Español -> Inglés
+      out.push({
+        type:'vocabulario',
+        badge:'Vocabulario · ES → EN',
+        badgeClass:'vocab',
+        q: `Traduce al inglés: <span class='term'>${item.es}</span>`,
+        a: `${item.en} — ${item.def}`
+      });
+    } else {
+      // Inglés -> Español
+      out.push({
+        type:'vocabulario',
+        badge:'Vocabulario · EN → ES',
+        badgeClass:'vocab',
+        q: `Traduce al español: <span class='term'>${item.en}</span>`,
+        a: `${item.es} — ${item.def}`
+      });
+    }
+  }
+  return out;
+}
+
+function updateProgress(){
+  const total = rounds.length;
+  const current = index + 1;
+  el.progressLabel.textContent = `Pregunta ${current} de ${total}`;
+  const pct = total ? (current / total) * 100 : 0;
+  el.progressFill.style.width = pct + '%';
+}
+
+function renderRound(){
+  const r = rounds[index];
+  revealed = false;
+
+  el.badge.textContent = r.badge;
+  el.badge.className = 'badge ' + r.badgeClass;
+  el.counter.textContent = `Ronda ${Math.floor(index/2)+1} · ${r.type === 'glosario' ? 'Glosario' : 'Vocabulario'}`;
+
+  el.question.innerHTML = r.q;
+  el.answer.textContent = 'Pulsa «Mostrar respuesta» cuando el alumno haya contestado en voz alta.';
+  el.answer.classList.add('hidden');
+  el.answerBox.classList.remove('revealed');
+
+  el.btnReveal.disabled = false;
+  el.btnNext.disabled = false;
+  el.btnStart.disabled = true;
+
+  updateProgress();
+}
+
+function revealAnswer(){
+  if(revealed || index < 0) return;
+  const r = rounds[index];
+  revealed = true;
+  el.answer.textContent = r.a;
+  el.answer.classList.remove('hidden');
+  el.answerBox.classList.add('revealed');
+  el.btnReveal.disabled = true;
+}
+
+function nextRound(){
+  if(index >= rounds.length - 1){
+    showFinish();
+    return;
+  }
+  index++;
+  renderRound();
+}
+
+function showFinish(){
+  el.gameCard.style.display = 'none';
+  el.finish.classList.add('show');
+  el.progressLabel.textContent = `Pregunta ${rounds.length} de ${rounds.length}`;
+  el.progressFill.style.width = '100%';
+}
+
+function startGame(){
+  rounds = buildRounds();
+  index = -1;
+  started = true;
+  el.finish.classList.remove('show');
+  el.gameCard.style.display = 'flex';
+  el.btnStart.disabled = true;
+  nextRound();
+}
+
+function restartGame(){
+  startGame();
+}
+
+/* Eventos */
+el.btnStart.addEventListener('click', startGame);
+el.btnReveal.addEventListener('click', revealAnswer);
+el.btnNext.addEventListener('click', nextRound);
+el.btnRestart.addEventListener('click', restartGame);
+
+/* Estado inicial */
+el.progressLabel.textContent = 'Pregunta 0 de 0';
+</script>
+</body>
+</html>
